@@ -10,12 +10,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Nunito Sans", sans-serif;
 }
 
 body {
   background-color: var(--dark-bg);
   color: var(--white-color);
-  font-family: "Nunito Sans", sans-serif;
 }
 
 nav {
@@ -26,7 +26,7 @@ nav {
   height: 70px;
   width: 100%;
   padding: 0 50px;
-  box-shadow: 0 2px 5px #000;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .dark-mode {
@@ -40,10 +40,21 @@ nav {
   cursor: pointer;
 }
 
+.search-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 50px;
+  padding: 0 50px;
+}
+
 #search {
   background: url("./search.svg") no-repeat 10px center;
   background-color: var(--light-dark);
   border: none;
+  width: 30vw;
   color: var(--white-color);
   font-size: 16px;
   padding: 10px 20px;
@@ -51,12 +62,27 @@ nav {
   font-size: 0.9rem;
   font-family: "Nunito Sans", sans-serif;
   font-weight: 100;
-  width: 90%;
   height: 50px;
   padding-left: 50px;
-  margin-top: 50px;
-  margin-left: calc((100vw - 90%)/2);
-  box-shadow: 0 2px 5px #000;
+  /* margin-top: 50px; */
+  /* margin-left: calc((100vw - 90%)/2); */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+#region {
+  height: 50px;
+  width: 20vw;
+  text-align: center;
+  background-color: var(--light-dark);
+  color: var(--white-color);
+  border: none;
+  border-radius: 5px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 1rem;
+}
+
+#region:focus {
+  outline: none;
 }
 
 input:focus {
@@ -90,7 +116,7 @@ input:focus {
 
 .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 0 20px #000;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
 }
 
@@ -120,5 +146,3 @@ strong {
     font-size: 0.9rem;
     gap: 5px;
 }
-
-
