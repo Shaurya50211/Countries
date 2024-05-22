@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://kit.fontawesome.com/1602d5504a.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="detailcss.css">
 </head>
 
@@ -19,43 +20,18 @@
         </span>
     </nav>
 
-
-    <button>
+    <button id="back">
         <span>
             <i class="fa-solid fa-arrow-left"></i>
-            <a href="./index.html">Back</a>
+            <a>Back</a>
         </span>
     </button>
 
-    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Canada_%28Pantone%29.svg" alt="flag">
+    <div id="big-container">
 
-    <h1>Canada</h1>
-
-    <div class="stats">
-        <div class="left-stats">
-            <p><strong>Native Name:</strong> Canada</p>
-            <p><strong>Population:</strong> 36,286,425</p>
-            <p><strong>Region:</strong> Americas</p>
-            <p><strong>Sub Region:</strong> Northern America</p>
-            <p><strong>Capital:</strong> Ottawa</p>
-        </div>
-
-        <div class="right-stats">
-            <p><strong>Top Level Domain:</strong> .ca</p>
-            <p><strong>Currencies:</strong> Canadian dollar</p>
-            <p><strong>Languages:</strong> English, French</p>
-        </div>
     </div>
 
 
-    <span class="border">
-        <strong>Border Countries:</strong>
-        <div class="border-countries">
-            <button>
-                <a href="#">United States</a>
-            </button>
-        </div>
-    </span>
 
     <script>
         const darkMode = document.querySelector(".dark-mode");
@@ -72,6 +48,10 @@
                 document.documentElement.style.setProperty('--light-dark', '#2c3743');
                 document.documentElement.style.setProperty('--white-color', '#f9f8fa');
             }
+        })
+
+        document.getElementById("back").addEventListener("click", () => {
+            window.location.href = "./index.html";
         })
     </script>
 </body>

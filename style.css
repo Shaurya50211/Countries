@@ -79,6 +79,8 @@ nav {
   border-radius: 5px;
   font-family: 'Nunito Sans', sans-serif;
   font-size: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  font-weight: 200;
 }
 
 #region:focus {
