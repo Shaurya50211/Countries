@@ -235,115 +235,88 @@ const countriesAbbreviations = {
     "SXM": "Sint Maarten (Dutch part)"
 };
 
-
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// Fetch data and initialize the application
 fetch("./data.json")
-    .then(response => {
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
-        addCountry(data);
         countries.push(...data);
+        addCountry(data);
     })
-    .catch(err => {
-        console.error(err);
-    })
+    .catch(err => console.error(err));
 
 function addCountry(countries) {
+    const cardsDiv = document.querySelector(".cards");
+    const fragment = document.createDocumentFragment();
+
     countries.forEach(country => {
-        const population = country.population;
-        const name = country.name;
-        const capital = country.capital;
-        const nativeName = country.nativeName;
-        const region = country.region;
-        const subregion = country.subregion;
-        const currencies = country.currencies ? country.currencies.map(currency => currency.name).join(", ") : "N/A";
-        const languages = country.languages ? country.languages.map(language => language.name).join(", ") : "N/A";
-        const topLevelDomain = country.topLevelDomain ? country.topLevelDomain.map(domain => domain).join(", ") : "N/A";
-        const flag = country.flag;
-
-        const cardsDiv = document.querySelector(".cards");
-        cardsDiv.innerHTML += `
-        <div class="card">
-        <img src="${flag}"
-            alt="flag">
-        <p class="name">${name}</p>
-
-        <div class="stats">
-            <span>
-                <strong>Population:</strong>
-                <span>${numberWithCommas(population)}</span>
-            </span>
-
-            <span>
-                <strong>Region:</strong>
-                <span>${region}</span>
-            </span>
-
-            <span>
-                <strong>Capital:</strong>
-                <span>${capital}</span>
-            </span>
-        </div>
-    </div>
-        `
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+            <img src="${country.flag}" alt="flag">
+            <p class="name">${country.name}</p>
+            <div class="stats">
+                <span><strong>Population:</strong><span>${numberWithCommas(country.population)}</span></span>
+                <span><strong>Region:</strong><span>${country.region}</span></span>
+                <span><strong>Capital:</strong><span>${country.capital}</span></span>
+            </div>
+        `;
+        fragment.appendChild(card);
     });
 
-    const cards = document.querySelectorAll(".card");
+    cardsDiv.appendChild(fragment);
 
-    cards.forEach(card => {
+    document.querySelectorAll(".card").forEach(card => {
         card.addEventListener("click", () => {
             const countryName = card.querySelector(".name").innerHTML;
             const country = countries.find(country => country.name === countryName);
-            redirctToDetailsPage(country);
+            redirectToDetailsPage(country);
         });
     });
 }
 
-function abbreviationToFull(abreviation) {
-    if (countriesAbbreviations[abreviation] != undefined) {
-        
-        return { name: countriesAbbreviations[abreviation], abbreviation: abreviation };
+function abbreviationToFull(abbreviation) {
+    if (countriesAbbreviations[abbreviation] !== undefined) {
+        return { name: countriesAbbreviations[abbreviation], abbreviation: abbreviation };
     } else {
-        return abreviation;
+        return abbreviation;
     }
 }
 
-function redirctToDetailsPage(country) {
+function redirectToDetailsPage(country) {
     const detailsHtml = `
-            <div class="container">
-        <img src="${country.flag}" alt="flag">
-        <div class="details">
-            <h1>${country.name}</h1>
-            <div class="stats">
-                <div class="left-stats">
-                    <p><strong>Native Name:</strong> ${country.nativeName}</p>
-                    <p><strong>Population:</strong> ${numberWithCommas(country.population)}</p>
-                    <p><strong>Region:</strong> ${country.region}</p>
-                    <p><strong>Sub Region:</strong> ${country.subregion}</p>
-                    <p><strong>Capital:</strong> ${country.capital}</p>
+        <div class="container">
+            <img src="${country.flag}" alt="flag">
+            <div class="details">
+                <h1>${country.name}</h1>
+                <div class="stats">
+                    <div class="left-stats">
+                        <p><strong>Native Name:</strong> ${country.nativeName}</p>
+                        <p><strong>Population:</strong> ${numberWithCommas(country.population)}</p>
+                        <p><strong>Region:</strong> ${country.region}</p>
+                        <p><strong>Sub Region:</strong> ${country.subregion}</p>
+                        <p><strong>Capital:</strong> ${country.capital}</p>
+                    </div>
+                    <div class="right-stats">
+                        <p><strong>Top Level Domain:</strong> ${country.topLevelDomain.join(", ")}</p>
+                        <p><strong>Currencies:</strong> ${country.currencies.map(currency => currency.name).join(", ")}</p>
+                        <p><strong>Languages:</strong> ${country.languages.map(language => language.name).join(", ")}</p>
+                    </div>
                 </div>
-                <div class="right-stats">
-                    <p><strong>Top Level Domain:</strong> ${country.topLevelDomain}</p>
-                    <p><strong>Currencies:</strong> ${country.currencies ? country.currencies.map(currency => currency.name).join(", ") : "N/A"}</p>
-                    <p><strong>Languages:</strong> ${ country.languages ? country.languages.map(language => language.name).join(", ") : "N/A" }</p>
-                </div>
+                <span class="border">
+                    <strong>Border Countries:</strong>
+                    <div class="border-countries">
+                        ${country.borders ? country.borders.map(border => {
+                            const countryInfo = abbreviationToFull(border);
+                            return `<button class="border-button" data-country-abbreviation="${countryInfo.abbreviation}">${countryInfo.name}</button>`;
+                        }).join("") : ""}
+                    </div>
+                </span>
             </div>
-            <span class="border">
-                <strong>Border Countries:</strong>
-                <div class="border-countries">
-                ${country.borders ? country.borders.map(border => {
-                    const countryInfo = abbreviationToFull(border);
-                    return `<button class="border-button" data-country-abbreviation="${countryInfo.abbreviation}">${countryInfo.name}</button>`;
-                }).join("") : ""}
-                </div>
-            </span>
         </div>
-    </div>
-
     `;
 
     const page = window.open("./details.html");
@@ -351,90 +324,70 @@ function redirctToDetailsPage(country) {
     page.addEventListener('load', () => {
         page.document.querySelector("#big-container").innerHTML = detailsHtml;
         page.document.querySelector("title").innerHTML = country.name;
-    })
+    });
 }
-
-
-// Path: search.js
 
 const searchInput = document.getElementById("search");
 
-searchInput.addEventListener("keyup", displayMatches);
-searchInput.addEventListener("change", displayMatches);
+const debouncedDisplayMatches = debounce(displayMatches, 300);
+searchInput.addEventListener("keyup", debouncedDisplayMatches);
+searchInput.addEventListener("change", debouncedDisplayMatches);
 
 function displayMatches() {
     const matchArray = findMatches(this.value, countries);
     const cardsDiv = document.querySelector(".cards");
     cardsDiv.innerHTML = "";
 
+    const fragment = document.createDocumentFragment();
+
     matchArray.forEach(country => {
-        const population = country.population;
-        const name = country.name;
-        const capital = country.capital;
-        const region = country.region;
-        const flag = country.flag;
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+            <img src="${country.flag}" alt="flag">
+            <p class="name">${country.name}</p>
+            <div class="stats">
+                <span><strong>Population:</strong><span>${numberWithCommas(country.population)}</span></span>
+                <span><strong>Region:</strong><span>${country.region}</span></span>
+                <span><strong>Capital:</strong><span>${country.capital}</span></span>
+            </div>
+        `;
+        fragment.appendChild(card);
+    });
 
-        cardsDiv.innerHTML += `
-        <div class="card">
-        <img src="${flag}"
-            alt="flag">
-        <p class="name">${name}</p>
+    cardsDiv.appendChild(fragment);
 
-        <div class="stats">
-            <span>
-                <strong>Population:</strong>
-                <span>${numberWithCommas(population)}</span>
-            </span>
-
-            <span>
-                <strong>Region:</strong>
-                <span>${region}</span>
-            </span>
-
-            <span>
-                <strong>Capital:</strong>
-                <span>${capital}</span>
-            </span>
-        </div>
-    </div>
-        `
-
-        document.querySelectorAll(".card").forEach(card => {
-            card.addEventListener("click", () => {
-                const countryName = card.querySelector(".name").innerHTML;
-                const country = countries.find(country => country.name === countryName);
-                redirctToDetailsPage(country);
-            })
-        })
+    document.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", () => {
+            const countryName = card.querySelector(".name").innerHTML;
+            const country = countries.find(country => country.name === countryName);
+            redirectToDetailsPage(country);
+        });
     });
 }
 
 function findMatches(wordToMatch, countries) {
-    return countries.filter(country => {
-        const regex = new RegExp(wordToMatch, "gi");
-        return country.name.match(regex);
-    });
+    const regex = new RegExp(wordToMatch, "gi");
+    return countries.filter(country => country.name.match(regex));
 }
 
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 
 const darkMode = document.querySelector(".dark-mode");
 
 darkMode.addEventListener("click", () => {
-    if (document.querySelector(".dark-mode p").innerHTML === "Light Mode") {
-        document.querySelector(".dark-mode p").innerHTML = "Dark Mode";
-        document.documentElement.style.setProperty('--dark-bg', '#fafafa');
-        document.documentElement.style.setProperty('--light-dark', '#ffffff');
-        document.documentElement.style.setProperty('--white-color', '#121417');
-    } else {
-        document.querySelector(".dark-mode p").innerHTML = "Light Mode";
-        document.documentElement.style.setProperty('--dark-bg', '#212c36');
-        document.documentElement.style.setProperty('--light-dark', '#2c3743');
-        document.documentElement.style.setProperty('--white-color', '#f9f8fa');
-    }
-})
-
-
-// Filter by region
+    const isLightMode = document.querySelector(".dark-mode p").innerHTML === "Light Mode";
+    document.querySelector(".dark-mode p").innerHTML = isLightMode ? "Dark Mode" : "Light Mode";
+    document.documentElement.style.setProperty('--dark-bg', isLightMode ? '#212c36' : '#fafafa');
+    document.documentElement.style.setProperty('--light-dark', isLightMode ? '#2c3743' : '#ffffff');
+    document.documentElement.style.setProperty('--white-color', isLightMode ? '#f9f8fa' : '#121417');
+});
 
 const regionSelect = document.getElementById("region");
 
@@ -445,39 +398,7 @@ function filterByRegion() {
     const cardsDiv = document.querySelector(".cards");
     cardsDiv.innerHTML = "";
 
-    if (selectedRegion === "All") {
-        addCountry(countries);
-        return;
-    } else {
-        countries.map(country => {
-            if (country.region === selectedRegion) {
-                cardsDiv.innerHTML += `
-                <div class="card">
-                <img src="${country.flag}"
-                    alt="flag">
-                <p class="name">${country.name}</p>
-            
-                <div class="stats">
-                    <span>
-                        <strong>Population:</strong>
-                        <span>${numberWithCommas(country.population)}</span>
-                    </span>
-            
-                    <span>
-                        <strong>Region:</strong>
-                        <span>${country.region}</span>
-                    </span>
-            
-                    <span>
-                        <strong>Capital:</strong>
-                        <span>${country.capital}</span>
-                    </span>
-                </div>
-            </div>
-                `
-            }
-        });
-    }
-}
+    const filteredCountries = selectedRegion === "All" ? countries : countries.filter(country => country.region === selectedRegion);
 
-// Card clicked, display details of country in a new page
+    addCountry(filteredCountries);
+}
